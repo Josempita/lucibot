@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"time"
-
+	 "math/rand"
 	"github.com/eclipse/paho.mqtt.golang"
 )
 
@@ -32,15 +32,21 @@ func main() {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}
-
-	for i := 0; i < 100; i++ {
-		
-		text := fmt.Sprintf("{temperature: %d}", i)
+	min := 25.0
+	max := 40.0
+	r := 25.0
+	for  {
+		 r = min + rand.Float64() * (max - min)
+		text := fmt.Sprintf("{temperature: %f}", r)
 		fmt.Println(text)
 		token := c.Publish("v1/devices/me/telemetry", 0, false, text)
 		token.Wait()
+		r = min + rand.Float64() * (max - min)
+		 text = fmt.Sprintf("{humidity: %f}", r)
+		token = c.Publish("v1/devices/me/telemetry", 0, false, text)
+		token.Wait()
 		time.Sleep(1 * time.Second)
-
+		
 	}
 
 	time.Sleep(6 * time.Second)
