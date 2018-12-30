@@ -5,13 +5,18 @@ import (
 	"log"
 	"os"
 	"time"
-	 "math/rand"
+
+	"github.com/Josempita/lucibot/sensor"
 	"github.com/eclipse/paho.mqtt.golang"
 )
 
 var f mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	fmt.Printf("TOPIC: %s\n", msg.Topic())
 	fmt.Printf("MSG: %s\n", msg.Payload())
+}
+
+func getSensorValue(s sensor.TemperatureSensor) {
+
 }
 
 func main() {
@@ -32,21 +37,20 @@ func main() {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}
-	min := 25.0
-	max := 40.0
-	r := 25.0
-	for  {
-		 r = min + rand.Float64() * (max - min)
-		text := fmt.Sprintf("{temperature: %f}", r)
-		fmt.Println(text)
-		token := c.Publish("v1/devices/me/telemetry", 0, false, text)
+
+	tempSensor := sensor.TemperatureSensor{Name: "temperature", Value: 0.0, UseRandom: true}
+	humidSensor := sensor.HumiditySensor{Name: "humidity", Value: 0.0, UseRandom: true}
+
+	for {
+
+		token := c.Publish("v1/devices/me/telemetry", 0, false, tempSensor.GetMQTTValue())
 		token.Wait()
-		r = min + rand.Float64() * (max - min)
-		 text = fmt.Sprintf("{humidity: %f}", r)
-		token = c.Publish("v1/devices/me/telemetry", 0, false, text)
+
+		token = c.Publish("v1/devices/me/telemetry", 0, false, humidSensor.GetMQTTValue())
 		token.Wait()
+
 		time.Sleep(1 * time.Second)
-		
+
 	}
 
 	time.Sleep(6 * time.Second)
