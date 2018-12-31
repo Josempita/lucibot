@@ -9,6 +9,7 @@ type TemperatureSensor struct {
 	Name      string  `json:"name"`
 	Value     float64 `json:"value"`
 	UseRandom bool    `json:"useRandom"`
+	State     bool    `json:"state"`
 }
 
 func (t TemperatureSensor) GetName() string {
@@ -33,4 +34,8 @@ func (t TemperatureSensor) GetRandomValue() float64 {
 	max := 40.0
 	r := min + rand.Float64()*(max-min)
 	return r
+}
+
+func (t TemperatureSensor) GetState() bool {
+	return t.State
 }

@@ -9,6 +9,7 @@ type HumiditySensor struct {
 	Name      string  `json:"name"`
 	Value     float64 `json:"value"`
 	UseRandom bool    `json:"useRandom"`
+	State     bool    `json:"state"`
 }
 
 func (h HumiditySensor) GetName() string {
@@ -26,6 +27,10 @@ func (t HumiditySensor) GetMQTTValue() string {
 
 func (h HumiditySensor) GetValue() float64 {
 	return h.Value
+}
+
+func (h HumiditySensor) GetState() bool {
+	return h.State
 }
 
 func (h HumiditySensor) GetRandomValue() float64 {
